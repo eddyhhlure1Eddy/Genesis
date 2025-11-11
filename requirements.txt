@@ -1,0 +1,50 @@
+# Genesis Engine Dependencies
+# Core dependencies for Genesis AI Engine
+
+# ===== Deep Learning Framework =====
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# ===== Model Loading =====
+safetensors>=0.4.2
+accelerate>=0.20.0
+
+# ===== Image Processing =====
+Pillow>=9.0.0
+numpy>=1.25.0
+opencv-python>=4.8.0
+
+# ===== Text Processing =====
+transformers>=4.37.2
+tokenizers>=0.15.0
+
+# ===== API Server =====
+flask>=3.0.0
+flask-cors>=4.0.0
+flask-socketio>=5.3.0
+python-socketio>=5.10.0
+aiohttp>=3.9.0
+
+# ===== Utilities =====
+tqdm>=4.66.0
+pyyaml>=6.0.0
+
+# ===== UI Frameworks (Optional) =====
+# gradio>=4.0.0  # Web UI
+# PyQt5>=5.15.0  # Desktop UI
+
+# ===== Optional Dependencies =====
+# scipy>=1.11.0  # Scientific computing
+# einops>=0.7.0  # Tensor operations
+
+# ===== Acceleration (Optional) =====
+# xformers>=0.0.22  # Memory efficient attention
+# triton>=2.1.0  # Triton GPU kernels
+# flash-attn>=2.0.0  # Flash Attention
+# sageattention  # Sage Attention
+
+# ===== Hardware Support (Optional) =====
+# torch-npu  # Huawei NPU/Ascend support
+# onnxruntime>=1.16.0  # ONNX Runtime
+# onnxruntime-gpu>=1.16.0  # ONNX Runtime with GPU
