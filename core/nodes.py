@@ -278,13 +278,26 @@ class SaveImageNode(BaseNode):
 
 class NodeRegistry:
     """Node registry for managing available nodes"""
-    
-    def __init__(self):
+
+    def __init__(self, auto_register_builtin: bool = False):
+        """
+        Initialize node registry
+
+        Args:
+            auto_register_builtin: If True, automatically register built-in nodes.
+                                  Default False for lazy loading.
+        """
         self.nodes: Dict[str, type] = {}
-        self._register_builtin_nodes()
-        
+        self._builtin_registered = False
+
+        if auto_register_builtin:
+            self._register_builtin_nodes()
+
     def _register_builtin_nodes(self):
-        """Register built-in nodes"""
+        """Register built-in nodes (call explicitly when needed)"""
+        if self._builtin_registered:
+            return
+
         builtin_nodes = [
             CheckpointLoaderNode,
             CLIPTextEncodeNode,
@@ -293,9 +306,16 @@ class NodeRegistry:
             VAEDecodeNode,
             SaveImageNode
         ]
-        
+
         for node_class in builtin_nodes:
             self.register(node_class)
+
+        self._builtin_registered = True
+
+    def ensure_builtin_registered(self):
+        """Ensure built-in nodes are registered (lazy initialization)"""
+        if not self._builtin_registered:
+            self._register_builtin_nodes()
     
     def register(self, node_class: type):
         """
@@ -310,36 +330,44 @@ class NodeRegistry:
         node_name = node_class.__name__.replace('Node', '')
         self.nodes[node_name] = node_class
         
-    def get(self, node_type: str) -> Optional[type]:
+    def get(self, node_type: str, auto_register: bool = True) -> Optional[type]:
         """
         Get node class by type
-        
+
         Args:
             node_type: Node type name
-            
+            auto_register: If True, auto-register built-in nodes if not found
+
         Returns:
             Node class or None
         """
+        if auto_register and node_type not in self.nodes:
+            self.ensure_builtin_registered()
+
         return self.nodes.get(node_type)
-    
-    def list_nodes(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
+
+    def list_nodes(self, category: Optional[str] = None, include_builtin: bool = True) -> List[Dict[str, Any]]:
         """
         List all registered nodes
-        
+
         Args:
             category: Filter by category
-            
+            include_builtin: If True, ensure built-in nodes are registered
+
         Returns:
             List of node information
         """
+        if include_builtin:
+            self.ensure_builtin_registered()
+
         nodes = []
         for name, node_class in self.nodes.items():
             info = node_class.get_node_info()
             info['name'] = name
-            
+
             if category is None or info['category'] == category:
                 nodes.append(info)
-                
+
         return nodes
     
     def list_categories(self) -> List[str]:
@@ -350,5 +378,5 @@ class NodeRegistry:
         return sorted(list(categories))
 
 
-# Global node registry
-NODE_REGISTRY = NodeRegistry()
+# Global node registry (lazy loading - no auto-registration)
+NODE_REGISTRY = NodeRegistry(auto_register_builtin=False)

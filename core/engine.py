@@ -1,5 +1,7 @@
 """
 Genesis Engine - Core Engine Implementation
+Author: eddy
+Date: 2025-11-12
 """
 
 import logging
@@ -38,11 +40,12 @@ class GenesisEngine:
         # Components
         self.model_loader: Optional[ModelLoader] = None
         self.executor: Optional[Executor] = None
-        
+        self.optimizer: Optional[Any] = None
+
         # State
         self._initialized = False
         self._device = None
-        
+
         self.logger.info(f"Genesis Engine v0.1.0 initialized")
         
     def initialize(self):
@@ -67,11 +70,14 @@ class GenesisEngine:
         
         # Detect device
         self._setup_device()
-        
+
+        # Apply core optimizations
+        self._apply_optimizations()
+
         # Initialize components
         self.model_loader = ModelLoader(self.config, self._device)
         self.executor = Executor(self.config, self._device)
-        
+
         self._initialized = True
         self.logger.info("✓ Genesis Engine initialized successfully")
         
@@ -97,11 +103,28 @@ class GenesisEngine:
             self._device = torch.device('cpu')
             self.logger.info("✓ Using CPU")
             
-        # TF32 optimization (NVIDIA Ampere+ GPU only)
-        if self._device.type == 'cuda' and self.config.allow_tf32:
-            torch.backends.cuda.matmul.allow_tf32 = True
-            torch.backends.cudnn.allow_tf32 = True
-            self.logger.debug("TF32 enabled for faster computation")
+    def _apply_optimizations(self):
+        """Apply core PyTorch and CUDA optimizations"""
+        try:
+            from .optimization import CoreOptimizer
+
+            self.optimizer = CoreOptimizer(self._device)
+            results = self.optimizer.apply_all_optimizations(
+                enable_tf32=getattr(self.config, 'allow_tf32', True),
+                enable_cudnn_benchmark=True,
+                enable_jit_fusion=True
+            )
+
+            applied = sum(1 for v in results.values() if v)
+            self.logger.info(f"✓ Applied {applied}/{len(results)} core optimizations")
+
+            if self.config.log_level == logging.DEBUG:
+                self.optimizer.print_optimization_report()
+
+        except ImportError:
+            self.logger.warning("optimization module not found")
+        except Exception as e:
+            self.logger.warning(f"Could not apply optimizations: {e}")
     
     def load_model(self, checkpoint_name: str, vae_name: Optional[str] = None) -> Dict:
         """

@@ -1,0 +1,25 @@
+# Genesis Wan Video Dependencies
+# Install: pip install -r wan_requirements.txt
+
+# Core video processing
+opencv-python>=4.8.0
+imageio-ffmpeg>=0.4.9
+decord>=0.6.0
+
+# Text encoding (T5)
+transformers>=4.35.0
+sentencepiece>=0.1.99
+
+# Model acceleration
+triton>=2.2.0
+xformers>=0.0.23
+
+# Video codec support
+av>=10.0.0
+
+# Optional: CLIP vision
+open-clip-torch>=2.24.0
+
+# Optional: Advanced features
+einops>=0.7.0
+kornia>=0.7.0

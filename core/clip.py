@@ -6,7 +6,7 @@ Author: eddy
 
 import torch
 import torch.nn as nn
-from typing import Optional, List, Union
+from typing import Optional, List, Union, Any
 import logging
 
 

@@ -32,6 +32,29 @@ from .interfaces import (
     MultiAttentionInterface, AdaptiveAttentionSwitch, AttentionType,
     create_attention_interface, get_interface_info
 )
+from . import folder_paths
+from .workflow_converter import (
+    ComfyUIWorkflowConverter, WorkflowNode, load_and_execute_workflow
+)
+from .custom_node_loader import custom_node_loader
+from .node_loader import node_loader, DynamicNodeLoader
+
+# No longer globally import all nodes - use dynamic loading instead
+# from ..nodes import *  # Removed global import
+# Now use node_loader to dynamically load required modules
+
+# Custom nodes can be loaded manually if needed
+# Disabled auto-loading to follow plugin architecture
+# To load custom nodes manually:
+#   from genesis.core import custom_node_loader
+#   custom_node_loader.scan_and_load_custom_nodes(str(custom_nodes_dir))
+
+import os
+from pathlib import Path
+custom_nodes_dir = Path(__file__).parent.parent / "custom_nodes"
+# Auto-loading disabled - use node_loader for on-demand loading
+# if custom_nodes_dir.exists():
+#     custom_node_loader.scan_and_load_custom_nodes(str(custom_nodes_dir))
 
 __all__ = [
     # Engine
@@ -100,5 +123,18 @@ __all__ = [
     'AdaptiveAttentionSwitch',
     'AttentionType',
     'create_attention_interface',
-    'get_interface_info'
+    'get_interface_info',
+    
+    # Folder Paths
+    'folder_paths',
+    
+    # Workflow Converter
+    'ComfyUIWorkflowConverter',
+    'WorkflowNode',
+    'load_and_execute_workflow',
+
+    # Node Loader (dynamic node loading)
+    'node_loader',
+    'DynamicNodeLoader',
+    'custom_node_loader',
 ]

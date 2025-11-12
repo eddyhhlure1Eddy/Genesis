@@ -17,7 +17,7 @@ from datetime import datetime
 from collections import defaultdict
 
 try:
-    from flask import Flask, request, jsonify, send_file
+    from flask import Flask, request, jsonify, send_file, send_from_directory
     from flask_cors import CORS
     from flask_socketio import SocketIO, emit, join_room, leave_room
     FLASK_AVAILABLE = True
@@ -315,27 +315,6 @@ class GenesisAdvancedServer:
     def _setup_http_routes(self):
         """Setup HTTP routes"""
         
-        @self.app.route('/', methods=['GET'])
-        def index():
-            """API index"""
-            return jsonify({
-                'name': 'Genesis Advanced Server',
-                'version': '0.1.0',
-                'author': 'eddy',
-                'features': [
-                    'RESTful API',
-                    'WebSocket support',
-                    'Task queue',
-                    'Progress tracking',
-                    'Multi-client support',
-                    'Session management'
-                ],
-                'endpoints': {
-                    'http': self._get_http_endpoints(),
-                    'websocket': self._get_websocket_events()
-                }
-            })
-        
         @self.app.route('/health', methods=['GET'])
         def health():
             """Health check"""
@@ -488,6 +467,111 @@ class GenesisAdvancedServer:
                     'success': False,
                     'error': str(e)
                 }), 500
+        
+        @self.app.route('/api/workflow/execute', methods=['POST'])
+        def execute_workflow():
+            """Execute ComfyUI workflow"""
+            try:
+                from ..core.workflow_converter import ComfyUIWorkflowConverter
+                
+                data = request.get_json() or {}
+                workflow = data.get('workflow')
+                
+                if not workflow:
+                    return jsonify({
+                        'success': False,
+                        'error': 'No workflow provided'
+                    }), 400
+                
+                converter = ComfyUIWorkflowConverter()
+                
+                if not converter.parse_workflow(workflow):
+                    return jsonify({
+                        'success': False,
+                        'error': 'Failed to parse workflow'
+                    }), 400
+                
+                result = converter.execute_workflow()
+                
+                return jsonify(result)
+                
+            except Exception as e:
+                self.app.logger.error(f"Workflow execution error: {e}")
+                return jsonify({
+                    'success': False,
+                    'error': str(e)
+                }), 500
+        
+        @self.app.route('/api/workflow/parse', methods=['POST'])
+        def parse_workflow():
+            """Parse ComfyUI workflow"""
+            try:
+                from ..core.workflow_converter import ComfyUIWorkflowConverter
+                
+                data = request.get_json() or {}
+                workflow = data.get('workflow')
+                
+                if not workflow:
+                    return jsonify({
+                        'success': False,
+                        'error': 'No workflow provided'
+                    }), 400
+                
+                converter = ComfyUIWorkflowConverter()
+                
+                if converter.parse_workflow(workflow):
+                    info = converter.get_workflow_info()
+                    genesis_workflow = converter.convert_to_genesis(workflow)
+                    
+                    return jsonify({
+                        'success': True,
+                        'info': info,
+                        'genesis_workflow': genesis_workflow.get('workflow')
+                    })
+                else:
+                    return jsonify({
+                        'success': False,
+                        'error': 'Failed to parse workflow'
+                    }), 400
+                    
+            except Exception as e:
+                self.app.logger.error(f"Workflow parse error: {e}")
+                return jsonify({
+                    'success': False,
+                    'error': str(e)
+                }), 500
+        
+        web_dir = Path(__file__).parent.parent / 'web'
+        
+        @self.app.route('/')
+        def serve_index():
+            """Serve web UI index"""
+            if web_dir.exists():
+                return send_from_directory(web_dir, 'index.html')
+            return jsonify({
+                'name': 'Genesis Advanced Server',
+                'version': '0.1.0',
+                'author': 'eddy',
+                'features': [
+                    'RESTful API',
+                    'WebSocket support',
+                    'Task queue',
+                    'Progress tracking',
+                    'Multi-client support',
+                    'Session management'
+                ],
+                'endpoints': {
+                    'http': self._get_http_endpoints(),
+                    'websocket': self._get_websocket_events()
+                }
+            })
+        
+        @self.app.route('/<path:filename>')
+        def serve_static(filename):
+            """Serve static files"""
+            if web_dir.exists():
+                return send_from_directory(web_dir, filename)
+            return jsonify({'error': 'File not found'}), 404
     
     def _setup_websocket_events(self):
         """Setup WebSocket events"""
@@ -570,7 +654,9 @@ class GenesisAdvancedServer:
             'POST /api/task/<task_id>/cancel',
             'GET  /api/tasks',
             'GET  /api/models',
-            'GET  /api/device'
+            'GET  /api/device',
+            'POST /api/workflow/execute',
+            'POST /api/workflow/parse'
         ]
     
     def _get_websocket_events(self) -> List[str]:
