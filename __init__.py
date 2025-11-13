@@ -45,6 +45,17 @@ def get_base_node():
     return BaseNode
 
 
+def register_wanvideo_nodes():
+    """
+    Register WanVideo nodes into the node registry
+
+    Returns:
+        bool: True if successful
+    """
+    from .nodes import wanvideo_nodes
+    return True
+
+
 # Default exports (no NODE_REGISTRY to prevent auto-loading)
 __all__ = [
     'GenesisEngine',
@@ -57,4 +68,5 @@ __all__ = [
     'create_optimized_device',
     'get_node_registry',
     'get_base_node',
+    'register_wanvideo_nodes',
 ]
