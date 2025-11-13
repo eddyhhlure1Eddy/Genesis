@@ -79,7 +79,7 @@ class GenesisEngine:
         self.executor = Executor(self.config, self._device)
 
         self._initialized = True
-        self.logger.info("✓ Genesis Engine initialized successfully")
+        self.logger.info("[OK] Genesis Engine initialized successfully")
         
     def _setup_device(self):
         """Setup computing device"""
@@ -88,20 +88,20 @@ class GenesisEngine:
                 self._device = torch.device(f'cuda:{self.config.device_id}')
                 gpu_name = torch.cuda.get_device_name(self.config.device_id)
                 vram_gb = torch.cuda.get_device_properties(self.config.device_id).total_memory / (1024**3)
-                self.logger.info(f"✓ Using GPU: {gpu_name} ({vram_gb:.1f} GB VRAM)")
+                self.logger.info(f"[OK] Using GPU: {gpu_name} ({vram_gb:.1f} GB VRAM)")
             else:
                 self.logger.warning("CUDA not available, falling back to CPU")
                 self._device = torch.device('cpu')
         elif self.config.device == 'mps':
             if torch.backends.mps.is_available():
                 self._device = torch.device('mps')
-                self.logger.info("✓ Using Apple Metal (MPS)")
+                self.logger.info("[OK] Using Apple Metal (MPS)")
             else:
                 self.logger.warning("MPS not available, falling back to CPU")
                 self._device = torch.device('cpu')
         else:
             self._device = torch.device('cpu')
-            self.logger.info("✓ Using CPU")
+            self.logger.info("[OK] Using CPU")
             
     def _apply_optimizations(self):
         """Apply core PyTorch and CUDA optimizations"""
@@ -116,7 +116,7 @@ class GenesisEngine:
             )
 
             applied = sum(1 for v in results.values() if v)
-            self.logger.info(f"✓ Applied {applied}/{len(results)} core optimizations")
+            self.logger.info(f"[OK] Applied {applied}/{len(results)} core optimizations")
 
             if self.config.log_level == logging.DEBUG:
                 self.optimizer.print_optimization_report()
@@ -196,7 +196,7 @@ class GenesisEngine:
         # Execute generation
         result = self.executor.execute_generation(params)
         
-        self.logger.info("✓ Generation completed")
+        self.logger.info("[OK] Generation completed")
         return result
     
     def get_available_models(self) -> Dict[str, List[str]]:
@@ -249,7 +249,7 @@ class GenesisEngine:
         if self._device and self._device.type == 'cuda':
             torch.cuda.empty_cache()
             
-        self.logger.info("✓ Cleanup completed")
+        self.logger.info("[OK] Cleanup completed")
     
     def _ensure_initialized(self):
         """Ensure engine is initialized"""

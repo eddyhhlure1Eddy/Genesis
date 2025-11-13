@@ -187,7 +187,7 @@ class CoreOptimizer:
                 torch.backends.cudnn.allow_tf32 = enable
 
                 if enable:
-                    logger.info("✓ TF32 enabled (Ampere+ optimization)")
+                    logger.info("[OK] TF32 enabled (Ampere+ optimization)")
                     self.optimizations_applied.append('tf32')
                 return True
         except Exception as e:
@@ -214,7 +214,7 @@ class CoreOptimizer:
                 torch.backends.cudnn.benchmark = enable
 
                 if enable:
-                    logger.info("✓ cuDNN benchmark enabled (auto-tuning)")
+                    logger.info("[OK] cuDNN benchmark enabled (auto-tuning)")
                     self.optimizations_applied.append('cudnn_benchmark')
                 return True
         except Exception as e:
@@ -240,7 +240,7 @@ class CoreOptimizer:
             if self.torch_version >= (2, 0):
                 torch.backends.cuda.enable_math_sdp(True)
 
-                logger.info("✓ Scaled Dot Product Attention enabled")
+                logger.info("[OK] Scaled Dot Product Attention enabled")
                 self.optimizations_applied.append('sdpa')
                 return True
         except Exception as e:
@@ -262,7 +262,7 @@ class CoreOptimizer:
         try:
             if hasattr(torch.backends.cuda.matmul, 'allow_fp16_accumulation'):
                 torch.backends.cuda.matmul.allow_fp16_accumulation = True
-                logger.info("✓ FP16 accumulation enabled")
+                logger.info("[OK] FP16 accumulation enabled")
                 self.optimizations_applied.append('fp16_accumulation')
                 return True
         except Exception as e:
@@ -282,7 +282,7 @@ class CoreOptimizer:
         try:
             if self.torch_version >= (2, 0):
                 torch.backends.cuda.enable_mem_efficient_sdp(True)
-                logger.info("✓ Memory-efficient attention enabled")
+                logger.info("[OK] Memory-efficient attention enabled")
                 self.optimizations_applied.append('memory_efficient_sdp')
                 return True
         except Exception as e:
@@ -304,7 +304,7 @@ class CoreOptimizer:
         try:
             if self.torch_version >= (2, 0):
                 torch.backends.cuda.enable_flash_sdp(True)
-                logger.info("✓ Flash Attention enabled")
+                logger.info("[OK] Flash Attention enabled")
                 self.optimizations_applied.append('flash_sdp')
                 return True
         except Exception as e:
@@ -325,7 +325,7 @@ class CoreOptimizer:
 
         try:
             if self.torch_version >= (2, 0) and self.cudnn_version and self.cudnn_version >= 8700:
-                logger.info("✓ cuDNN Attention available")
+                logger.info("[OK] cuDNN Attention available")
                 self.optimizations_applied.append('cudnn_attention')
                 return True
         except Exception as e:
@@ -347,7 +347,7 @@ class CoreOptimizer:
         try:
             if self.torch_version >= (2, 5):
                 torch.backends.cuda.allow_fp16_bf16_reduction_math_sdp(True)
-                logger.info("✓ FP16/BF16 reduction enabled")
+                logger.info("[OK] FP16/BF16 reduction enabled")
                 self.optimizations_applied.append('fp16_bf16_reduction')
                 return True
         except Exception as e:
@@ -370,7 +370,7 @@ class CoreOptimizer:
             if enable:
                 torch._C._jit_set_profiling_executor(True)
                 torch._C._jit_set_profiling_mode(True)
-                logger.info("✓ JIT fusion enabled")
+                logger.info("[OK] JIT fusion enabled")
                 self.optimizations_applied.append('jit_fusion')
             return True
         except Exception as e:
@@ -390,7 +390,7 @@ class CoreOptimizer:
         try:
             if self.torch_version >= (2, 0):
                 torch.set_float32_matmul_precision(precision)
-                logger.info(f"✓ Matmul precision set to: {precision}")
+                logger.info(f"[OK] Matmul precision set to: {precision}")
                 self.optimizations_applied.append(f'matmul_precision_{precision}')
                 return True
         except Exception as e:
@@ -414,7 +414,7 @@ class CoreOptimizer:
 
         try:
             compiled_model = torch.compile(model, mode=mode)
-            logger.info(f"✓ Model compiled with mode: {mode}")
+            logger.info(f"[OK] Model compiled with mode: {mode}")
             self.optimizations_applied.append(f'compile_{mode}')
             return compiled_model
         except Exception as e:
@@ -449,7 +449,7 @@ class CoreOptimizer:
             self.fp8_format = fp8_format
 
             arch_name = self._get_architecture_name()
-            logger.info(f"✓ FP8 quantization enabled ({fp8_format}) for {arch_name}")
+            logger.info(f"[OK] FP8 quantization enabled ({fp8_format}) for {arch_name}")
             logger.info("  • 2x performance vs FP16")
             logger.info("  • Reduced memory bandwidth")
             self.optimizations_applied.append(f'fp8_{fp8_format}')
@@ -545,7 +545,7 @@ class CoreOptimizer:
                 if param.requires_grad:
                     param.data = self.quantize_fp8_tensor(param.data, fp8_format)
 
-            logger.info(f"✓ Model quantized to FP8 ({fp8_format})")
+            logger.info(f"[OK] Model quantized to FP8 ({fp8_format})")
             return model
 
         except Exception as e:
@@ -628,7 +628,7 @@ class CoreOptimizer:
 
         print(f"\nOptimizations Applied: {report['optimization_count']}")
         for opt in report['optimizations_applied']:
-            print(f"  ✓ {opt}")
+            print(f"  [OK] {opt}")
 
         print("=" * 80 + "\n")
 

@@ -380,3 +380,23 @@ class NodeRegistry:
 
 # Global node registry (lazy loading - no auto-registration)
 NODE_REGISTRY = NodeRegistry(auto_register_builtin=False)
+
+
+# Decorator for registering nodes
+def register_node(node_class: type):
+    """
+    Decorator to register a node class
+
+    Usage:
+        @register_node
+        class MyNode(BaseNode):
+            ...
+
+    Args:
+        node_class: Node class to register
+
+    Returns:
+        The node class (unchanged)
+    """
+    NODE_REGISTRY.register(node_class)
+    return node_class

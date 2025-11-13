@@ -226,10 +226,44 @@ def ensure_directories():
     os.makedirs(input_directory, exist_ok=True)
 
 
+def get_full_path_or_raise(folder_name: str, filename: str) -> str:
+    """
+    Get full path for a file, raising an exception if not found
+
+    Args:
+        folder_name: Name of the folder type
+        filename: Name of the file
+
+    Returns:
+        Full path to the file
+
+    Raises:
+        FileNotFoundError: If the file doesn't exist
+    """
+    folders = get_folder_paths(folder_name)
+
+    for folder in folders:
+        full_path = os.path.join(folder, filename)
+        if os.path.exists(full_path):
+            return full_path
+
+    # Check models directory directly as fallback
+    models_path = os.path.join("e:\\chai fream\\models", folder_name, filename)
+    if os.path.exists(models_path):
+        return models_path
+
+    # Final fallback - check diffusion_models directly
+    diffusion_path = os.path.join("e:\\chai fream\\models\\diffusion_models", filename)
+    if os.path.exists(diffusion_path):
+        return diffusion_path
+
+    raise FileNotFoundError(f"Could not find {filename} in {folder_name} folders: {folders}")
+
+
 def get_directory_structure() -> Dict[str, List[str]]:
     """
     Get the complete directory structure
-    
+
     Returns:
         Dictionary mapping folder names to their paths
     """
