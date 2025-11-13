@@ -1,3 +1,6 @@
+
+![demo_vid](https://github.com/user-attachments/assets/8817303a-841e-4228-b2de-c99de79c9979)
+
 # Genesis AI Engine
 
 ## Overview
