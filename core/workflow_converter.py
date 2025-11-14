@@ -179,6 +179,12 @@ class ComfyUIWorkflowConverter:
         """
         context = context or {}
         results = {}
+        try:
+            if not custom_node_loader.get_all_nodes():
+                base = Path(__file__).parent.parent / 'custom_nodes' / 'Comfyui'
+                custom_node_loader.scan_and_load_custom_nodes(str(base))
+        except Exception:
+            pass
         
         try:
             for node_id in self.execution_order:

@@ -1,0 +1,29 @@
+# Genesis 模型路径配置
+# 修改 base_path 指向你的 ComfyUI models 文件夹即可
+
+comfyui:
+  base_path: e:\Comfyu3.13---test\ComfyUI\models
+  checkpoints: checkpoints
+  loras: loras
+  vae: vae
+  clip: clip
+  text_encoders: text_encoders
+  controlnet: controlnet
+  upscale_models: upscale_models
+  embeddings: embeddings
+  diffusion_models: diffusion_models
+  unet: unet
+
+# 添加其他模型路径示例（取消注释即可使用）
+# my_models:
+  base_path: E:\\fuxkcomfy_windows_portable\\FuxkComfy\\models
+  checkpoints: checkpoints
+  loras: loras
+  vae: vae
+  clip: clip
+  text_encoders: text_encoders
+  controlnet: controlnet
+  upscale_models: upscale_models
+  embeddings: embeddings
+  diffusion_models: diffusion_models
+  unet: unet

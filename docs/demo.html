@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesis AI 演示界面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1.1em;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .model-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .model-list h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .model-item {
+            padding: 10px;
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Genesis AI 图像生成器</h1>
+            <p>轻量级、高性能的 AI 生成引擎演示界面</p>
+        </div>
+        
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('generate')">🎨 图像生成</button>
+                <button class="tab" onclick="showTab('models')">📦 模型管理</button>
+                <button class="tab" onclick="showTab('about')">ℹ️ 关于</button>
+            </div>
+            
+            <!-- 生成标签页 -->
+            <div id="generate" class="tab-content active">
+                <h2>生成设置</h2>
+                
+                <div class="form-group">
+                    <label>正向提示词</label>
+                    <textarea rows="3" placeholder="描述你想生成的图像...">a beautiful landscape with mountains and lake, sunset, 4k, highly detailed</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>负向提示词</label>
+                    <textarea rows="2" placeholder="要避免的内容...">ugly, blurry, low quality, distorted</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="form-group">
+                        <label>Checkpoint 模型</label>
+                        <select id="checkpoint-select">
+                            <option>(未选择)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>LoRA 模型</label>
+                        <select id="lora-select">
+                            <option>(未选择)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="form-group">
+                        <label>宽度: <span id="width-value">512</span></label>
+                        <input type="range" min="256" max="2048" step="64" value="512" 
+                               oninput="document.getElementById('width-value').textContent=this.value">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>高度: <span id="height-value">512</span></label>
+                        <input type="range" min="256" max="2048" step="64" value="512"
+                               oninput="document.getElementById('height-value').textContent=this.value">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="form-group">
+                        <label>采样步数: <span id="steps-value">20</span></label>
+                        <input type="range" min="1" max="150" value="20"
+                               oninput="document.getElementById('steps-value').textContent=this.value">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>CFG Scale: <span id="cfg-value">7.0</span></label>
+                        <input type="range" min="1" max="20" step="0.5" value="7.0"
+                               oninput="document.getElementById('cfg-value').textContent=this.value">
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="alert('这是演示界面，实际生成需要完整的 Genesis 引擎')">
+                    🎨 生成图像
+                </button>
+                
+                <div class="info-box" style="margin-top: 30px;">
+                    <strong>💡 提示</strong><br>
+                    这是 Genesis 的演示界面，展示参数配置和界面设计。<br>
+                    要使用完整的图像生成功能，请集成 Genesis 引擎。
+                </div>
+            </div>
+            
+            <!-- 模型标签页 -->
+            <div id="models" class="tab-content">
+                <h2>可用模型</h2>
+                
+                <div class="success-box">
+                    <strong>✅ 模型路径配置成功！</strong><br>
+                    Genesis 已成功读取你的模型文件夹。
+                </div>
+                
+                <div class="model-list">
+                    <h3>📦 Checkpoints <span class="badge" id="checkpoint-count">0</span></h3>
+                    <div id="checkpoint-list"></div>
+                </div>
+                
+                <div class="model-list">
+                    <h3>🎨 LoRAs <span class="badge" id="lora-count">0</span></h3>
+                    <div id="lora-list"></div>
+                </div>
+                
+                <div class="model-list">
+                    <h3>🖼️ VAEs <span class="badge" id="vae-count">0</span></h3>
+                    <div id="vae-list"></div>
+                </div>
+                
+                <div class="info-box">
+                    <strong>📁 模型路径配置</strong><br>
+                    编辑 <code>extra_model_paths.yaml</code> 文件来添加模型路径：<br><br>
+                    <code>
+                    comfyui:<br>
+                    &nbsp;&nbsp;base_path: E:\你的路径\ComfyUI\models<br>
+                    &nbsp;&nbsp;checkpoints: checkpoints<br>
+                    &nbsp;&nbsp;loras: loras
+                    </code>
+                </div>
+            </div>
+            
+            <!-- 关于标签页 -->
+            <div id="about" class="tab-content">
+                <h2>Genesis AI Engine</h2>
+                
+                <h3>🚀 特性</h3>
+                <ul style="line-height: 2;">
+                    <li><strong>轻量级架构</strong> - 纯执行引擎，无 UI 依赖</li>
+                    <li><strong>高性能优化</strong> - GPU 加速，支持 TF32/FP8</li>
+                    <li><strong>灵活集成</strong> - 可集成到任何应用</li>
+                    <li><strong>模型复用</strong> - 支持读取 ComfyUI 模型</li>
+                </ul>
+                
+                <h3 style="margin-top: 30px;">📦 支持的模型格式</h3>
+                <ul style="line-height: 2;">
+                    <li>SafeTensors (.safetensors)</li>
+                    <li>PyTorch (.pt, .pth, .ckpt)</li>
+                    <li>Pickle (.pkl)</li>
+                </ul>
+                
+                <h3 style="margin-top: 30px;">🔧 系统要求</h3>
+                <p><strong>推荐配置:</strong></p>
+                <ul style="line-height: 2;">
+                    <li>Python 3.11+</li>
+                    <li>16GB+ RAM</li>
+                    <li>NVIDIA RTX 30/40 系列 GPU</li>
+                    <li>CUDA 12.0+</li>
+                </ul>
+                
+                <div class="success-box" style="margin-top: 30px;">
+                    <strong>👨‍💻 作者:</strong> eddy<br>
+                    <strong>📅 日期:</strong> 2025-11-13<br>
+                    <strong>📄 许可:</strong> AGPL-3.0
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            // 隐藏所有标签页
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的标签页
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // 模拟加载模型数据
+        window.addEventListener('load', function() {
+            // 这里可以通过 API 获取实际的模型列表
+            // 现在使用模拟数据
+            const models = {
+                checkpoints: ['model1.safetensors'],
+                loras: Array.from({length: 45}, (_, i) => `lora_${i+1}.safetensors`),
+                vaes: ['vae1.safetensors', 'vae2.safetensors', 'vae3.safetensors', 'vae4.safetensors', 'vae5.safetensors']
+            };
+            
+            // 更新计数
+            document.getElementById('checkpoint-count').textContent = models.checkpoints.length;
+            document.getElementById('lora-count').textContent = models.loras.length;
+            document.getElementById('vae-count').textContent = models.vaes.length;
+            
+            // 填充下拉列表
+            const checkpointSelect = document.getElementById('checkpoint-select');
+            models.checkpoints.forEach(model => {
+                const option = document.createElement('option');
+                option.textContent = model;
+                checkpointSelect.appendChild(option);
+            });
+            
+            const loraSelect = document.getElementById('lora-select');
+            models.loras.slice(0, 20).forEach(model => {
+                const option = document.createElement('option');
+                option.textContent = model;
+                loraSelect.appendChild(option);
+            });
+            
+            // 显示模型列表
+            const checkpointList = document.getElementById('checkpoint-list');
+            models.checkpoints.forEach(model => {
+                const div = document.createElement('div');
+                div.className = 'model-item';
+                div.textContent = model;
+                checkpointList.appendChild(div);
+            });
+            
+            const loraList = document.getElementById('lora-list');
+            models.loras.slice(0, 10).forEach(model => {
+                const div = document.createElement('div');
+                div.className = 'model-item';
+                div.textContent = model;
+                loraList.appendChild(div);
+            });
+            if (models.loras.length > 10) {
+                const div = document.createElement('div');
+                div.style.padding = '10px';
+                div.style.color = '#666';
+                div.textContent = `... 还有 ${models.loras.length - 10} 个`;
+                loraList.appendChild(div);
+            }
+            
+            const vaeList = document.getElementById('vae-list');
+            models.vaes.forEach(model => {
+                const div = document.createElement('div');
+                div.className = 'model-item';
+                div.textContent = model;
+                vaeList.appendChild(div);
+            });
+        });
+    </script>
+</body>
+</html>

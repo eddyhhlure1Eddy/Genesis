@@ -3,6 +3,27 @@
 
 # Genesis AI Engine
 
+## 🚀 Quick Start - WebUI
+
+**NEW: Unified WebUI (Similar to A1111 WebUI)**
+
+```bash
+# Quick Start - Just double click:
+start.bat
+
+# Or install dependencies first:
+C:\Users\Administrator\Desktop\fork\python313\python.exe -m pip install gradio diffusers transformers accelerate
+
+# Then launch:
+start.bat
+```
+
+**Access:** http://localhost:7860
+
+**See:** [QUICKSTART_WEBUI.md](docs/QUICKSTART_WEBUI.md) | [WEBUI_GUIDE.md](docs/WEBUI_GUIDE.md) | [All Documentation](docs/)
+
+---
+
 ## Overview
 
 Genesis is a lightweight, high-performance AI generation engine designed with a clear separation between the core execution layer and presentation interfaces. The architecture enables developers to build any frontend application while leveraging a robust, optimized backend infrastructure.

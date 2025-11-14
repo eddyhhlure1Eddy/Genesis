@@ -6,7 +6,18 @@ Author: eddy
 
 import os
 import glob
-from . import folder_paths
+import sys
+from pathlib import Path
+
+try:
+    from . import folder_paths
+except ImportError:
+    import importlib.util
+    current_dir = Path(__file__).parent
+    spec = importlib.util.spec_from_file_location("folder_paths", current_dir / "folder_paths.py")
+    folder_paths = importlib.util.module_from_spec(spec)
+    sys.modules['folder_paths'] = folder_paths
+    spec.loader.exec_module(folder_paths)
 
 
 def add_model_folder_path(folder_name, paths):
