@@ -1,0 +1,32 @@
+# Genesis AI Engine - Primary Project
+
+This is the primary/main project for Genesis AI Engine development.
+
+## Project Information
+- Repository: https://github.com/eddyhhlure1Eddy/Genesis
+- Active Branch: webui-modular-integration
+- Status: Primary Development Project
+- Last Updated: 2025-11-14
+
+## Quick Start
+```bash
+# Launch WebUI
+start.bat
+
+# Or manually
+C:\Users\Administrator\Desktop\fork\python313\python.exe apps\genesis_webui_integrated.py
+```
+
+## Access
+- WebUI: http://localhost:7860
+- Documentation: docs/
+- Project Status: PROJECT_STATUS.txt
+
+## Architecture
+- Fully modular with dynamic loading
+- Main entry: apps/genesis_webui_integrated.py
+- Modules: sd_module, wanvideo_module
+- Clean, production-ready codebase
+
+---
+This project is marked as PRIMARY for active development.

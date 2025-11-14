@@ -1,0 +1,24 @@
+{
+  "name": "Genesis AI Engine",
+  "type": "primary",
+  "repository": "https://github.com/eddyhhlure1Eddy/Genesis",
+  "branch": "webui-modular-integration",
+  "description": "Genesis AI Engine - Modular WebUI with dynamic module loading",
+  "author": "eddy",
+  "version": "1.0.0",
+  "created": "2025-11-14",
+  "status": "active",
+  "features": [
+    "Dynamic module loading",
+    "Modular architecture",
+    "WanVideo integration (6 nested tabs)",
+    "Stable Diffusion support",
+    "Production-ready WebUI"
+  ],
+  "entry_points": {
+    "webui": "apps/genesis_webui_integrated.py",
+    "startup": "start.bat"
+  },
+  "documentation": "docs/",
+  "priority": "primary"
+}
